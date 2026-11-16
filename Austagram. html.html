@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>অষ্টগ্রাম ই-সেবা</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#F6F4EE;--card:#fff;--ink:#1B2B25;--mut:#4A5A53;--pri:#0F5F4A;--onpri:#fff;--acc:#E8A33D;--line:#C9D3CE;--tint:#DDEBE4;--err:#9A2B1B;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10201A;--card:#1A2F27;--ink:#EAF1EC;--mut:#A9BAB1;--pri:#2E8F72;--line:#335147;--tint:#244339;--err:#FF9C8A}}
+:root[data-theme="dark"]{--bg:#10201A;--card:#1A2F27;--ink:#EAF1EC;--mut:#A9BAB1;--pri:#2E8F72;--line:#335147;--tint:#244339;--err:#FF9C8A}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans Bengali',system-ui,sans-serif;font-size:16px;line-height:1.5}
+.app{max-width:560px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+header{background:var(--pri);color:var(--onpri);padding:24px 20px 20px}
+.hero{background:linear-gradient(135deg,#0B4A39,#177A5C);padding:28px 20px 36px;border-radius:0 0 28px 28px}.brand{display:flex;align-items:center;gap:14px}.hero h1{font-size:28px}.hero svg{flex:none;filter:drop-shadow(0 4px 8px rgba(0,0,0,.3))}
+header h1{margin:0;font-size:24px}
+header p{margin:4px 0 0;font-size:13px;opacity:.9}
+.top{display:flex;align-items:center;gap:8px}
+.back{background:transparent;border:0;color:inherit;font:600 16px inherit;min-height:44px;min-width:44px;cursor:pointer;padding:0 8px 0 0}
+main{flex:1;padding:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{background:var(--card);border:0;border-radius:16px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:10px;min-height:96px;cursor:pointer;color:var(--ink);font:600 14px inherit}
+.ic{width:40px;height:40px;border-radius:12px;background:var(--tint);color:var(--pri);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex:none}
+.tile{box-shadow:inset 0 3px 0 var(--c)}.tile .ic{background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--c)}
+.note{background:var(--tint);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--mut);margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;min-height:40px;padding:0 14px;font:600 14px inherit;cursor:pointer}
+.chip.on{background:var(--pri);color:var(--onpri);border-color:var(--pri)}
+input,select,textarea{width:100%;min-height:48px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;font:16px inherit;background:var(--card);color:var(--ink)}
+textarea{min-height:96px}
+label{display:block;font-size:14px;font-weight:600;margin:12px 0 4px}
+.btn{background:var(--pri);color:var(--onpri);border:0;border-radius:12px;min-height:48px;padding:0 18px;font:600 15px inherit;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.btn.acc{background:var(--acc);color:#1B2B25;width:100%;margin:8px 0 14px}
+.btn.sm{min-height:44px}
+.item{background:var(--card);border-radius:16px;padding:14px 16px;margin-bottom:10px}
+.item h3{margin:0;font-size:16px}
+.item .m{font-size:13px;color:var(--mut);margin-top:2px}
+.item p{margin:6px 0 0;font-size:14px;white-space:pre-wrap}
+.act{display:flex;gap:8px;margin-top:10px}
+.del{background:transparent;border:1px solid var(--line);color:var(--err);border-radius:12px;min-height:44px;padding:0 14px;font:600 14px inherit;cursor:pointer}
+.sec{font-size:16px;margin:18px 0 10px;color:var(--ink)}.empty{text-align:center;color:var(--mut);padding:32px 12px}
+.err{color:var(--err);font-size:13px;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="app">
+<header id="hd"></header>
+<main id="mn"></main>
+</div>
+<script>
+var M={
+emergency:{t:'জরুরি যোগাযোগ',i:'জ',f:[['name','নাম / প্রতিষ্ঠান'],['cat','ধরন','sel',['অ্যাম্বুলেন্স','ডাক্তার','ফায়ার সার্ভিস','থানা','হাসপাতাল','অন্যান্য']],['phone','ফোন নম্বর','tel',0,1]]},
+blood:{t:'রক্তদাতা ডিরেক্টরি',i:'র',note:'রক্তদাতার সম্মতিতে নম্বর দেওয়া হবে। অনুমতি ছাড়া অন্যের নম্বর যোগ করবেন না।',f:[['name','দাতার নাম'],['grp','রক্তের গ্রুপ','sel',['A+','A-','B+','B-','O+','O-','AB+','AB-']],['ward','ওয়ার্ড / গ্রাম'],['phone','ফোন নম্বর','tel',0,1],['last','শেষ রক্তদান (ঐচ্ছিক)']]},
+lost:{t:'হারানো ও প্রাপ্তি',i:'হা',ti:1,f:[['kind','ধরন','sel',['হারানো','প্রাপ্ত']],['item','জিনিসের বিবরণ'],['place','স্থান'],['phone','যোগাযোগ নম্বর','tel']]},
+history:{t:'ইতিহাস ও ঐতিহ্য',i:'ই',f:[['title','শিরোনাম'],['body','বিবরণ','area']]},
+gunijon:{t:'গুণীজন',i:'গু',f:[['name','নাম'],['role','পেশা / অবদান'],['body','বিস্তারিত','area']]},
+edu:{t:'শিক্ষা ও বৃত্তি',i:'শি',ti:1,f:[['kind','ধরন','sel',['ভর্তি','বৃত্তি','প্রতিষ্ঠান','আপডেট']],['title','শিরোনাম'],['body','বিবরণ ও শেষ তারিখ','area']]},
+jobs:{t:'চাকরির খবর',i:'চা',f:[['title','পদের নাম'],['org','প্রতিষ্ঠান'],['dl','আবেদনের শেষ তারিখ'],['phone','যোগাযোগ','tel']]},
+biz:{t:'ব্যবসা ও পেশাজীবী',i:'ব্য',f:[['name','নাম / প্রতিষ্ঠান'],['kind','ধরন (দোকান, কারিগর, সেবা)'],['place','ঠিকানা'],['phone','ফোন নম্বর','tel']]},
+transport:{t:'লঞ্চ, বাস ও নৌকা',i:'ল',f:[['name','নাম'],['kind','ধরন','sel',['লঞ্চ','বাস','নৌকা / ট্রলার']],['route','রুট'],['time','ছাড়ার সময়']]},
+market:{t:'হাট-বাজারের দর',i:'বা',ti:1,f:[['kind','ধরন','sel',['মাছ','ধান / কৃষিপণ্য','সবজি','অন্যান্য']],['item','পণ্য'],['price','দর (টাকা, একক সহ)'],['hat','হাটের নাম']]},
+tourism:{t:'পর্যটন তথ্য',i:'প',f:[['name','স্থান / আবাসনের নাম'],['place','যাতায়াত বা ঠিকানা'],['body','বিবরণ','area']]},
+news:{t:'সংবাদ ও ঘোষণা',i:'স',ti:1,f:[['kind','ধরন','sel',['সংবাদ','অনুষ্ঠান','খেলাধুলা','ঘোষণা']],['title','শিরোনাম'],['body','বিস্তারিত','area']]},
+expat:{t:'প্রবাসী অষ্টগ্রামবাসী',i:'প্র',f:[['name','নাম'],['country','দেশ'],['phone','যোগাযোগ (ঐচ্ছিক)','tel']]},
+govt:{t:'সরকারি সেবা ও তথ্য',i:'সে',f:[['title','সেবার নাম'],['body','আবেদনপ্রক্রিয়া ও প্রয়োজনীয় কাগজ','area'],['phone','দপ্তরের ফোন','tel']]},
+roads:{t:'রাস্তা-ঘাট নির্মাণের আবেদন',i:'রা',ti:2,f:[['kind','ধরন','sel',['রাস্তা','ঘাট','সেতু','কালভার্ট']],['ward','ওয়ার্ড / গ্রাম'],['spot','নির্দিষ্ট স্থান'],['body','বর্তমান অবস্থা ও কেন প্রয়োজন','area'],['phone','যোগাযোগ নম্বর','tel']]},
+complaint:{t:'অভিযোগ ও পরামর্শ',i:'অ',ti:1,f:[['kind','বিষয়','sel',['রাস্তা','বিদ্যুৎ','স্বাস্থ্য','অন্যান্য']],['title','শিরোনাম'],['body','বিস্তারিত','area']]}
+};
+M.mosque={t:'মসজিদ ও নামাজের সময়',f:[['name','মসজিদের নাম'],['place','ঠিকানা / ওয়ার্ড'],['times','জামায়াতের সময় (যেমন: ফজর ৫:১০, যোহর ১:১৫, জুমা ১:৩০)','area'],['phone','ইমাম / মুয়াজ্জিন (ঐচ্ছিক)','tel']]};
+M.health={t:'হাসপাতাল ও ওষুধের দোকান',f:[['name','নাম'],['kind','ধরন','sel',['হাসপাতাল','ক্লিনিক','ফার্মেসি','ডায়াগনস্টিক']],['place','ঠিকানা'],['hours','খোলার সময়'],['phone','ফোন নম্বর','tel']]};
+M.reps={t:'জনপ্রতিনিধিদের তথ্য',note:'তথ্য যাচাই করে যোগ করুন। পদ ও এলাকাসহ সঠিক তথ্য দিন।',f:[['name','নাম'],['role','পদ','sel',['চেয়ারম্যান','মেম্বার','মহিলা মেম্বার','কাউন্সিলর','সংসদ সদস্য','অন্যান্য']],['area','ওয়ার্ড / ইউনিয়ন'],['phone','ফোন নম্বর','tel']]};
+M.ads={t:'ভাড়া, জমি ও যানবাহন',ti:1,f:[['kind','ধরন','sel',['ভাড়া বাসা','জমি বিক্রি','জমি ভাড়া','যানবাহন']],['title','শিরোনাম'],['place','এলাকা'],['price','দাম / ভাড়া'],['body','বিস্তারিত','area'],['phone','যোগাযোগ নম্বর','tel',0,1]]};
+M.history.f.push(['by','তথ্য যোগকারীর নাম (ঐচ্ছিক)'],['phone','যোগকারীর যোগাযোগ (ঐচ্ছিক)','tel']);
+M.bank={t:'ব্যাংক, এজেন্ট ও সমিতি',f:[['name','নাম'],['kind','ধরন','sel',['ব্যাংক','এজেন্ট ব্যাংকিং','বিকাশ এজেন্ট','নগদ এজেন্ট','সমিতি']],['place','ঠিকানা'],['hours','খোলার সময়'],['phone','ফোন নম্বর','tel']]};
+M.death={t:'মৃত্যু সংবাদ ও জানাজা',note:'পরিবারের অনুমতি নিয়ে সংবাদ দিন।',f:[['name','মরহুম / মরহুমার নাম'],['area','ঠিকানা'],['janaza','জানাজার সময় ও স্থান'],['phone','যোগাযোগ (ঐচ্ছিক)','tel']]};
+M.vehicle={t:'অটোরিকশা, মাঝি ও যানবাহন',f:[['name','নাম'],['kind','ধরন','sel',['অটোরিকশা','মাঝি / নৌকা','ট্রলার','পিকআপ / ট্রাক','মোটরসাইকেল','অন্যান্য']],['area','এলাকা'],['phone','ফোন নম্বর','tel',0,1]]};
+M.youth={t:'যুব সংগঠন ও স্বেচ্ছাসেবক',f:[['name','সংগঠনের নাম'],['kind','ধরন','sel',['যুব সংগঠন','স্বেচ্ছাসেবক দল','ক্লাব','রক্তদান সংগঠন']],['area','এলাকা'],['phone','যোগাযোগ','tel']]};
+M.skills={t:'দক্ষতা প্রশিক্ষণ ও ফ্রিল্যান্সিং',ti:1,f:[['kind','ধরন','sel',['কম্পিউটার','ফ্রিল্যান্সিং','কারিগরি','অন্যান্য']],['title','প্রশিক্ষণ / কোর্সের নাম'],['place','প্রতিষ্ঠান ও স্থান'],['body','বিবরণ ও ভর্তির নিয়ম','area'],['phone','যোগাযোগ','tel']]};
+M.sports={t:'খেলাধুলা ও প্রতিযোগিতা',ti:1,f:[['kind','ধরন','sel',['ক্রিকেট','ফুটবল','কাবাডি ও দেশীয় খেলা','নৌকাবাইচ','অন্যান্য']],['title','আয়োজনের নাম'],['date','তারিখ'],['place','স্থান'],['body','বিবরণ','area']]};
+M.fund={t:'দান ও সহায়তা তহবিল',note:'কে সংগ্রহ করছেন, কত উঠেছে ও কোথায় খরচ হচ্ছে, তা খোলাখুলি লিখুন। অপরিচিত কাউকে টাকা দেওয়ার আগে যাচাই করুন।',f:[['title','তহবিলের উদ্দেশ্য'],['body','বিবরণ ও হিসাব','area'],['phone','যোগাযোগ','tel',0,1]]};
+M.map={t:'মানচিত্র',f:[['name','জায়গার নাম'],['kind','ধরন','sel',['মসজিদ','স্কুল','হাসপাতাল','বাজার','ঘাট','অন্যান্য']],['addr','ঠিকানা'],['link','গুগল ম্যাপ লিংক (ঐচ্ছিক)','url']]};
+M.agri={t:'কৃষি ও মৎস্য পরামর্শ',ti:1,f:[['kind','ধরন','sel',['ধান','সবজি','মাছ চাষ','মাছ ধরার নিষেধাজ্ঞা','পশুপালন','অন্যান্য']],['title','শিরোনাম'],['body','পরামর্শ বা ঘোষণা','area'],['phone','কৃষি / মৎস্য অফিস','tel']]};
+M.land={t:'ভূমি সেবা',f:[['title','সেবার নাম (নামজারি, খাজনা ইত্যাদি)'],['body','পদ্ধতি ও প্রয়োজনীয় কাগজ','area'],['office','অফিস ও ঠিকানা'],['phone','অফিসের ফোন','tel']]};
+function S(p){return '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>'}
+var IC={
+history:S('<path d="M3 21h18M5 21V10l7-6 7 6v11M9 21v-6h6v6"/>'),
+gunijon:S('<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'),
+edu:S('<path d="M2 9l10-5 10 5-10 5zM6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5M22 9v6"/>'),
+blood:S('<path d="M12 3c3.5 4.5 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 2.5-6.5 6-11z"/>'),
+emergency:S('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>'),
+govt:S('<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 21h18"/>'),
+news:S('<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7"/>'),
+roads:S('<path d="M8 3L5 21M16 3l3 18M12 4v3M12 11v3M12 18v3"/>'),
+complaint:S('<path d="M4 5h16v11H9l-5 4zM8 9h8M8 12h5"/>'),
+lost:S('<circle cx="11" cy="11" r="6"/><path d="M16 16l5 5"/>'),
+jobs:S('<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/>'),
+biz:S('<path d="M4 9l1.5-5h13L20 9M4 9v11h16V9M4 9a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0M10 20v-5h4v5"/>'),
+transport:S('<path d="M3 17l2 3h14l2-3zM6 17v-6h12v6M12 11V4"/>'),
+market:S('<path d="M4 9h16l-1.5 10h-13zM8 9l3-5M16 9l-3-5"/>'),
+tourism:S('<path d="M2 20l7-12 5 8 3-4 5 8z"/><circle cx="17" cy="6" r="1.5"/>'),
+expat:S('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>')
+};
+IC.mosque=S('<path d="M4 21V12a8 6 0 0 1 16 0v9M2 21h20M12 3V1M9 21v-5a3 3 0 0 1 6 0v5"/>');IC.health=S('<path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z"/>');IC.reps=S('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>');IC.ads=S('<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/>');
+IC.bank=S('<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>');IC.death=S('<path d="M20 14A8 8 0 1 1 10 4a6.5 6.5 0 0 0 10 10z"/>');IC.vehicle=S('<path d="M5 16v-5l2-5h10l2 5v5M3 16h18v3H3zM7 19v2M17 19v2M7 11h10"/>');IC.youth=S('<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20a6 6 0 0 1 12 0M15 14a5 5 0 0 1 6 5"/>');IC.skills=S('<rect x="5" y="5" width="14" height="10" rx="1.5"/><path d="M2 19h20"/>');IC.sports=S('<path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4v1a3 3 0 0 0 4 3M16 6h4v1a3 3 0 0 1-4 3M12 13v4M8 21h8M10 17h4"/>');IC.fund=S('<path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.5A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z"/>');IC.map=S('<path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>');IC.agri=S('<path d="M12 21v-9M12 12c0-4-3-6-7-6 0 4 3 6 7 6zM12 14c0-3 2.5-5 6-5 0 3-2.5 5-6 5z"/>');IC.land=S('<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/>');
+(function(){var L=['#0F5F4A','#B45309','#1D4ED8','#B91C1C','#C2410C','#6D28D9','#0E7490','#A16207','#BE185D','#4D7C0F','#7C2D12','#4338CA','#0369A1','#15803D','#86198F','#475569','#047857','#BE123C','#92400E','#0D9488','#1E40AF','#9F1239','#3F6212','#6B21A8','#075985','#854D0E','#115E59','#701A75','#334155','#9A3412'],D=['#5FD1AE','#FBBF6A','#8FB2FF','#FF9C9C','#FFA477','#BFA2FF','#5FD3E8','#E8C25A','#FF8FBF','#A7D65A','#E0A27F','#A5A8FF','#6CC6F5','#6FDC8C','#E79BF0','#B6C2D0','#5EEAB4','#FDA4AF','#FDBA74','#5EEAD4','#93B4FF','#FDA4AF','#BEF264','#D8B4FE','#7DD3FC','#FDE047','#5EEAD4','#F0ABFC','#CBD5E1','#FDBA74'],a='',b='',c='';L.forEach(function(x,i){a+='.k'+i+'{--c:'+x+'}';b+=':root:not([data-theme="light"]) .k'+i+'{--c:'+D[i]+'}';c+=':root[data-theme="dark"] .k'+i+'{--c:'+D[i]+'}'});var s=document.createElement('style');s.textContent=a+'@media (prefers-color-scheme:dark){'+b+'}'+c;document.head.appendChild(s)})();
+var mem={};
+function ld(k){try{var v=localStorage.getItem('ae_'+k);return v?JSON.parse(v):[]}catch(e){return mem[k]||[]}}
+function sv(k,v){try{localStorage.setItem('ae_'+k,JSON.stringify(v))}catch(e){mem[k]=v}}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var hd=document.getElementById('hd'),mn=document.getElementById('mn'),flt={},q={};
+function home(){
+hd.innerHTML='<h1>অষ্টগ্রাম ই-সেবা</h1><p>আমাদের অষ্টগ্রামের ডিজিটাল সেবা</p>';
+var LOGO='<svg viewBox="0 0 64 64" width="68" height="68" aria-hidden="true"><rect width="64" height="64" rx="18" fill="#fff"/><circle cx="44" cy="20" r="9" fill="#E8A33D"/><path d="M26 35V22l9 13z" fill="#B91C1C"/><path d="M17 36h20l-4 6H21z" fill="#7C2D12"/><path d="M6 42c6-5 10-5 16 0s10 5 16 0 10-5 20 0v22H6z" fill="#0F5F4A"/><path d="M6 51c6-5 10-5 16 0s10 5 16 0 10-5 20 0v13H6z" fill="#2E8F72"/></svg>';hd.className='hero';hd.innerHTML='<div class="brand">'+LOGO+'<div>'+hd.innerHTML+'</div></div>';var T=function(k){return '<button class="tile k'+Object.keys(M).indexOf(k)+'" data-k="'+k+'"><span class="ic">'+IC[k]+'</span>'+M[k].t+'</button>'};var A=['history','gunijon','edu','blood','emergency','govt'],B=['news','death','mosque','health','agri','land','reps','bank','vehicle','map','roads','complaint','lost','jobs','skills','youth','sports','fund','ads','biz','transport','market','tourism','expat'],g='<div class="grid">'+A.map(T).join('')+''+B.map(T).join('')+'</div>';
+mn.innerHTML='<div class="note">নমুনা সংস্করণ: যোগ করা তথ্য শুধু এই ডিভাইসে সংরক্ষিত থাকে, অন্যদের ফোনে দেখা যায় না।</div>'+g;
+mn.querySelectorAll('.tile').forEach(function(b){b.onclick=function(){location.hash=b.dataset.k}});
+}
+function mod(k){
+var m=M[k],ti=m.ti||0,sel=null;
+m.f.forEach(function(f){if(!sel&&f[2]==='sel')sel=f});
+hd.innerHTML='<div class="top"><button class="back" aria-label="হোমে ফিরুন" id="bk">←</button><h1 style="font-size:20px">'+m.t+'</h1></div>';
+document.getElementById('bk').onclick=function(){location.hash=''};
+var h=(m.note?'<div class="note">'+m.note+'</div>':'')+'<button class="btn acc" id="ad">+ নতুন যোগ করুন</button><div id="fm"></div><input id="sr" type="search" placeholder="খুঁজুন" aria-label="খুঁজুন" value="'+esc(q[k]||'')+'" style="margin-bottom:12px">';
+if(sel){h+='<div class="chips"><button class="chip'+(flt[k]?'':' on')+'" data-v="">সব</button>';sel[3].forEach(function(o){h+='<button class="chip'+(flt[k]===o?' on':'')+'" data-v="'+esc(o)+'">'+esc(o)+'</button>'});h+='</div>'}
+h+='<div id="ls"></div>';mn.innerHTML=h;
+function list(){
+var d=ld(k),t=(q[k]||'').toLowerCase(),o='';
+d.forEach(function(e,ix){
+if(sel&&flt[k]&&e[sel[0]]!==flt[k])return;
+if(t&&JSON.stringify(e).toLowerCase().indexOf(t)<0)return;
+var meta=[],body='',ph='',lk='';
+m.f.forEach(function(f,j){var v=e[f[0]];if(!v||j===ti)return;if(f[2]==='tel')ph=v;else if(f[2]==='url')lk=v;else if(f[2]==='area')body=v;else meta.push((f[0]==='by'?'তথ্য যোগকারী: ':'')+esc(v))});
+o+='<div class="item"><h3>'+esc(e[m.f[ti][0]])+'</h3>'+(meta.length?'<div class="m">'+meta.join(' · ')+'</div>':'')+(body?'<p>'+esc(body)+'</p>':'')+'<div class="act">'+(lk&&/^https?:\/\//i.test(lk)?'<a class="btn sm" target="_blank" rel="noopener noreferrer" href="'+esc(lk)+'">মানচিত্রে দেখুন</a>':'')+(ph?'<a class="btn sm" href="tel:'+esc(ph.replace(/[^0-9+]/g,''))+'">কল করুন</a>':'')+'<button class="del" data-i="'+ix+'" aria-label="মুছুন">মুছুন</button></div></div>'});
+document.getElementById('ls').innerHTML=o||'<div class="empty">এখনো কিছু যোগ করা হয়নি।</div>';
+document.querySelectorAll('.del').forEach(function(b){b.onclick=function(){if(confirm('মুছে ফেলবেন?')){var a=ld(k);a.splice(+b.dataset.i,1);sv(k,a);list()}}});
+}
+list();
+document.getElementById('sr').oninput=function(){q[k]=this.value;list()};
+mn.querySelectorAll('.chip').forEach(function(c){c.onclick=function(){flt[k]=c.dataset.v;mod(k)}});
+document.getElementById('ad').onclick=function(){
+var f=document.getElementById('fm');
+if(f.innerHTML){f.innerHTML='';return}
+var s='';m.f.forEach(function(x,j){
+s+='<label for="f'+j+'">'+x[1]+'</label>';
+if(x[2]==='sel'){s+='<select id="f'+j+'">'+x[3].map(function(o){return'<option>'+o+'</option>'}).join('')+'</select>'}
+else if(x[2]==='area'){s+='<textarea id="f'+j+'"></textarea>'}
+else{s+='<input id="f'+j+'"'+(x[2]==='tel'?' type="tel" inputmode="tel"':'')+'>'}});
+f.innerHTML='<div class="item">'+s+'<div class="err" id="er"></div><div class="act"><button class="btn" id="sb">সংরক্ষণ করুন</button></div></div>';
+document.getElementById('sb').onclick=function(){
+var e={},bad='';
+m.f.forEach(function(x,j){var v=document.getElementById('f'+j).value.trim();e[x[0]]=v;if((j===ti||x[4])&&!v)bad=x[1]+' দিতে হবে'});
+if(bad){document.getElementById('er').textContent=bad;return}
+var a=ld(k);a.unshift(e);sv(k,a);mod(k)}};
+}
+function route(){hd.className='';var k=location.hash.slice(1);window.scrollTo(0,0);if(M[k])mod(k);else home()}
+window.addEventListener('hashchange',route);route();
+</script>
+</body>
+</html>
